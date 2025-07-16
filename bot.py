@@ -40,7 +40,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "chat_id": chat_id
             }).execute()
         
-        await update.message.reply_text("You are already registered!")
+        await update.message.reply_text(f"Welcome back, {user.username}! You are already registered!")
     else:
         # Register the user
         supabase.table("users").insert({
@@ -63,7 +63,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ], resize_keyboard=True)
 
         await update.message.reply_text(
-            "Welcome to the LeetCode Habit Bot! Use /done to log your progress.",
+            f"Welcome, {user.username}! 🎉\n"
+            "You are now registered with the LeetCode Habit Bot!\n"
+            "Use /done to log your progress and /help to see available commands.",
             reply_markup=menu
         )
 
@@ -193,6 +195,7 @@ async def welcome_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Hello everyone! 🎉\n"
             "I'm the LeetCode Habit Bot, here to help you track your coding progress and stay consistent!\n\n"
             "🚀 Here's what I can do for you:\n"
+            "• Use /start to register yourself with the bot\n"
             "• Use /done to log your daily problem submissions\n"
             "• Use /set_group_chat_id to set this group for reminders and leaderboard updates\n"
             "• Check out the leaderboard to see who has the longest streaks!\n\n"
