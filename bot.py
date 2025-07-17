@@ -352,25 +352,35 @@ def reset_daily_streaks_job():
 # Wrapper functions for scheduler jobs
 def send_reminders_job():
     print("📅 send_reminders_job called!")
-    
+
     import asyncio
     try:
         # Create a new event loop for this thread
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         print("Created new event loop for scheduler thread")
-        
+
         # Run the coroutine
         loop.run_until_complete(send_reminders())
         print("✅ send_reminders_job completed successfully!")
-        
+
+    except RuntimeError as e:
+        print(f"❌ RuntimeError in send_reminders_job: {e}")
+        if "Event loop is closed" in str(e):
+            print("🔄 Attempting to recreate event loop...")
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(send_reminders())
+            print("✅ send_reminders_job retried successfully!")
+
     except Exception as e:
         print(f"❌ Error in send_reminders_job: {e}")
+
     finally:
         try:
             loop.close()
-        except:
-            pass
+        except Exception as e:
+            print(f"❌ Error closing event loop: {e}")
 
 def post_leaderboard_job():
     print("📊 post_leaderboard_job called!")
